@@ -13,7 +13,7 @@ Follow these steps to set up and run the anomaly detection and forecasting proje
 ## Step 1: Clone the Repository
 1. Open a terminal or command prompt.
 2. Run the following command to clone the repository:
-### git clone https://github.com/<your-username>/Anomaly_Forecasting_Snowflake.git
+- git clone https://github.com/<your-username>/Anomaly_Forecasting_Snowflake.git
 3. Navigate into the project directory:
 cd Anomaly_Forecasting_Snowflake
 
@@ -41,7 +41,7 @@ Sets up a database (anomaly_db), schema (anomaly_schema), and warehouse (anomaly
 1. Prepare a CSV file named anomaly.csv with the required columns (e.g., BUILDING_ID, PAID_YEAR_MONTH_TM, PAID_AMT, etc.). See the CLM_FACT table structure in the script for details.
 2. Upload the CSV file to Snowflake’s internal stage:
 Use the Snowflake UI (navigate to Databases > anomaly_db > anomaly_schema > Stages > anomaly_stage) or the CLI:
-# snowsql -a <your-account> -u <your-username> -q "PUT file://path/to/anomaly.csv @anomaly_stage"
+- snowsql -a <your-account> -u <your-username> -q "PUT file://path/to/anomaly.csv @anomaly_stage"
 3. Run the commands under -- Step 2: Loading and Preparing the Data to create the stage, define the file format, and load data:
 
 - CREATE OR REPLACE STAGE anomaly_stage;

@@ -13,7 +13,7 @@ Follow these steps to set up and run the anomaly detection and forecasting proje
 ## Step 1: Clone the Repository
 1. Open a terminal or command prompt.
 2. Run the following command to clone the repository:
-# git clone https://github.com/<your-username>/Anomaly_Forecasting_Snowflake.git
+### git clone https://github.com/<your-username>/Anomaly_Forecasting_Snowflake.git
 3. Navigate into the project directory:
 cd Anomaly_Forecasting_Snowflake
 

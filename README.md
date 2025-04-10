@@ -1,11 +1,11 @@
 # Anomaly_Forecasting_Snowflake
-### This repository provides a comprehensive Snowflake SQL script for performing anomaly detection and time-series forecasting using Snowflake's built-in machine learning functions (SNOWFLAKE.ML.ANOMALY_DETECTION and SNOWFLAKE.ML.FORECAST). The script demonstrates how to set up a Snowflake environment, load data, train models, detect anomalies, and generate forecasts for a dataset containing building-related payment data.
+This repository provides a comprehensive Snowflake SQL script for performing anomaly detection and time-series forecasting using Snowflake's built-in machine learning functions (SNOWFLAKE.ML.ANOMALY_DETECTION and SNOWFLAKE.ML.FORECAST). The script demonstrates how to set up a Snowflake environment, load data, train models, detect anomalies, and generate forecasts for a dataset containing building-related payment data.
 
 # 📌 Project Objectives
-### Detect anomalies in payment amounts (PAID_AMT) across time for buildings.
-### Forecast future payment amounts using historical trends.
-### Compare model performance with and without known anomaly labels.
-### Store and evaluate predictions in Snowflake tables for further analysis.
+Detect anomalies in payment amounts (PAID_AMT) across time for buildings.
+Forecast future payment amounts using historical trends.
+Compare model performance with and without known anomaly labels.
+Store and evaluate predictions in Snowflake tables for further analysis.
 
 # 🧱 Step-by-Step Instructions for GitHub Users
 Follow these steps to set up and run the anomaly detection and forecasting project in Snowflake using this repository.
@@ -13,7 +13,7 @@ Follow these steps to set up and run the anomaly detection and forecasting proje
 # Step 1: Clone the Repository
 1. Open a terminal or command prompt.
 2. Run the following command to clone the repository:
-git clone https://github.com/<your-username>/Anomaly_Forecasting_Snowflake.git
+### git clone https://github.com/<your-username>/Anomaly_Forecasting_Snowflake.git
 3. Navigate into the project directory:
 cd Anomaly_Forecasting_Snowflake
 
@@ -21,15 +21,15 @@ cd Anomaly_Forecasting_Snowflake
 1. Log in to your Snowflake account using a user with ACCOUNTADMIN privileges.
 2. Open the provided script file (e.g., anomaly_forecasting.sql) in a text editor or Snowflake worksheet.
 3. Execute the commands under -- Step 1: Setting Up the Environment:
-Creates a role (ANOMALY_ROLE) and assigns it to a user (replace ANOMALYFORCASTING with your username).
-Sets up a database (anomaly_db), schema (anomaly_schema), and warehouse (anomaly_wh).
+- Creates a role (ANOMALY_ROLE) and assigns it to a user (replace ANOMALYFORCASTING with your username).
+- Sets up a database (anomaly_db), schema (anomaly_schema), and warehouse (anomaly_wh).
 
-USE ROLE accountadmin;
-CREATE OR REPLACE ROLE anomaly_role;
-GRANT CREATE DATABASE ON ACCOUNT TO ROLE anomaly_role;
-GRANT CREATE WAREHOUSE ON ACCOUNT TO ROLE anomaly_role;
-GRANT ROLE anomaly_role TO USER <your-username>;
-USE ROLE anomaly_role;
+-- USE ROLE accountadmin;
+-- CREATE OR REPLACE ROLE anomaly_role;
+-- GRANT CREATE DATABASE ON ACCOUNT TO ROLE anomaly_role;
+-- GRANT CREATE WAREHOUSE ON ACCOUNT TO ROLE anomaly_role;
+-- GRANT ROLE anomaly_role TO USER <your-username>;
+-- USE ROLE anomaly_role;
 CREATE OR REPLACE DATABASE anomaly_db;
 CREATE OR REPLACE SCHEMA anomaly_db.anomaly_schema;
 CREATE OR REPLACE WAREHOUSE anomaly_wh WITH WAREHOUSE_SIZE = 'XSMALL' AUTO_SUSPEND = 300 AUTO_RESUME = TRUE;
@@ -41,7 +41,7 @@ GRANT CREATE SNOWFLAKE.ML.ANOMALY_DETECTION ON SCHEMA anomaly_db.anomaly_schema 
 1. Prepare a CSV file named anomaly.csv with the required columns (e.g., BUILDING_ID, PAID_YEAR_MONTH_TM, PAID_AMT, etc.). See the CLM_FACT table structure in the script for details.
 2. Upload the CSV file to Snowflake’s internal stage:
 Use the Snowflake UI (navigate to Databases > anomaly_db > anomaly_schema > Stages > anomaly_stage) or the CLI:
-snowsql -a <your-account> -u <your-username> -q "PUT file://path/to/anomaly.csv @anomaly_stage"
+### snowsql -a <your-account> -u <your-username> -q "PUT file://path/to/anomaly.csv @anomaly_stage"
 3. Run the commands under -- Step 2: Loading and Preparing the Data to create the stage, define the file format, and load data:
 
 CREATE OR REPLACE STAGE anomaly_stage;
@@ -81,6 +81,7 @@ BEGIN
     LET x := SQLID;
     CREATE OR REPLACE TABLE anomaly_detection_without_label AS SELECT * FROM TABLE(RESULT_SCAN(:x));
 END;
+
 SELECT * FROM anomaly_detection_without_label;
 
 # Step 6: Run Supervised Anomaly Detection (Optional)
@@ -104,6 +105,7 @@ BEGIN
     LET x := SQLID;
     CREATE OR REPLACE TABLE anomaly_detection_with_label AS SELECT * FROM TABLE(RESULT_SCAN(:x));
 END;
+
 SELECT * FROM anomaly_detection_with_label;
 
 # Step 7: Compare Anomaly Detection Models
@@ -138,10 +140,10 @@ SELECT * FROM forecast_prediction;
 # Step 9: Evaluate Models
 1. Check model performance with -- Step 11:
 
-. CALL admodel_withoutlabel!SHOW_EVALUATION_METRICS();
-. CALL admodel_withoutlabel!EXPLAIN_FEATURE_IMPORTANCE();
-. CALL model_forecast!SHOW_EVALUATION_METRICS();
-. CALL model_forecast!EXPLAIN_FEATURE_IMPORTANCE();
+-- CALL admodel_withoutlabel!SHOW_EVALUATION_METRICS();
+-- CALL admodel_withoutlabel!EXPLAIN_FEATURE_IMPORTANCE();
+-- CALL model_forecast!SHOW_EVALUATION_METRICS();
+-- CALL model_forecast!EXPLAIN_FEATURE_IMPORTANCE();
 
 # 📊 Example Output
 ![image](https://github.com/user-attachments/assets/4030f509-450f-447d-84f3-33f3653bd452)

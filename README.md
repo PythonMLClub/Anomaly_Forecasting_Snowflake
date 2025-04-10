@@ -61,6 +61,7 @@ SELECT * FROM anomaly_db.anomaly_schema.CLM_FACT WHERE PAID_YEAR_MONTH_TM < '201
 SELECT * FROM anomaly_db.anomaly_schema.CLM_FACT WHERE PAID_YEAR_MONTH_TM >= '2016-01-16 21:00:00.000';
 
 ### Step 5: Run Unsupervised Anomaly Detection
+
 1. Train the unsupervised model by running -- Step 6:
 
 CREATE OR REPLACE SNOWFLAKE.ML.ANOMALY_DETECTION admodel_withoutlabel (
@@ -86,6 +87,7 @@ END;
 3. SELECT * FROM anomaly_detection_without_label;
 
 ### Step 6: Run Supervised Anomaly Detection (Optional)
+
 1. If your data includes an ANOMALY column with labels, train the supervised model with -- Step 8:
 
 CREATE OR REPLACE SNOWFLAKE.ML.ANOMALY_DETECTION admodel_withlabel (
@@ -111,6 +113,7 @@ END;
 3. SELECT * FROM anomaly_detection_with_label;
 
 ### Step 7: Compare Anomaly Detection Models
+
 1 . Run -- Step 10 to compare the number of anomalies detected:
 
 ''' SELECT 'Without Label' AS model, COUNT(*) AS anomalies_detected
@@ -120,6 +123,7 @@ SELECT 'With Label' AS model, COUNT(*) AS anomalies_detected
 FROM anomaly_detection_with_label WHERE IS_ANOMALY = TRUE; '''
 
 ### Step 8: Generate Forecasts
+
 1 . Train the forecasting model under -- CREATE PREDICTIONS:
 
 CREATE OR REPLACE SNOWFLAKE.ML.FORECAST model_forecast (
@@ -142,7 +146,7 @@ SELECT * FROM TABLE(model_forecast!FORECAST(
 3. SELECT * FROM forecast_prediction;
 
 ### Step 9: Evaluate Models
-1. Check model performance with -- Step 11:
+Check model performance with -- Step 11:
 
 - CALL admodel_withoutlabel!SHOW_EVALUATION_METRICS();
 - CALL admodel_withoutlabel!EXPLAIN_FEATURE_IMPORTANCE();

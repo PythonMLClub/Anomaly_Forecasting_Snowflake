@@ -138,10 +138,10 @@ SELECT * FROM forecast_prediction;
 # Step 9: Evaluate Models
 1. Check model performance with -- Step 11:
 
-CALL admodel_withoutlabel!SHOW_EVALUATION_METRICS();
-CALL admodel_withoutlabel!EXPLAIN_FEATURE_IMPORTANCE();
-CALL model_forecast!SHOW_EVALUATION_METRICS();
-CALL model_forecast!EXPLAIN_FEATURE_IMPORTANCE();
+. CALL admodel_withoutlabel!SHOW_EVALUATION_METRICS();
+. CALL admodel_withoutlabel!EXPLAIN_FEATURE_IMPORTANCE();
+. CALL model_forecast!SHOW_EVALUATION_METRICS();
+. CALL model_forecast!EXPLAIN_FEATURE_IMPORTANCE();
 
 # 📊 Example Output
 ![image](https://github.com/user-attachments/assets/4030f509-450f-447d-84f3-33f3653bd452)

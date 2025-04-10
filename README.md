@@ -1,11 +1,11 @@
 # Anomaly_Forecasting_Snowflake
-This repository provides a comprehensive Snowflake SQL script for performing anomaly detection and time-series forecasting using Snowflake's built-in machine learning functions (SNOWFLAKE.ML.ANOMALY_DETECTION and SNOWFLAKE.ML.FORECAST). The script demonstrates how to set up a Snowflake environment, load data, train models, detect anomalies, and generate forecasts for a dataset containing building-related payment data.
+### This repository provides a comprehensive Snowflake SQL script for performing anomaly detection and time-series forecasting using Snowflake's built-in machine learning functions (SNOWFLAKE.ML.ANOMALY_DETECTION and SNOWFLAKE.ML.FORECAST). The script demonstrates how to set up a Snowflake environment, load data, train models, detect anomalies, and generate forecasts for a dataset containing building-related payment data.
 
 # 📌 Project Objectives
-Detect anomalies in payment amounts (PAID_AMT) across time for buildings.
-Forecast future payment amounts using historical trends.
-Compare model performance with and without known anomaly labels.
-Store and evaluate predictions in Snowflake tables for further analysis.
+### Detect anomalies in payment amounts (PAID_AMT) across time for buildings.
+### Forecast future payment amounts using historical trends.
+### Compare model performance with and without known anomaly labels.
+### Store and evaluate predictions in Snowflake tables for further analysis.
 
 # 🧱 Step-by-Step Instructions for GitHub Users
 Follow these steps to set up and run the anomaly detection and forecasting project in Snowflake using this repository.

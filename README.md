@@ -69,6 +69,7 @@ CREATE OR REPLACE SNOWFLAKE.ML.ANOMALY_DETECTION admodel_withoutlabel (
     TARGET_COLNAME => 'PAID_AMT',
     LABEL_COLNAME => ''
 );
+
 2. Detect anomalies on the test data and save results with -- Step 7:
 
 BEGIN
@@ -82,7 +83,7 @@ BEGIN
     CREATE OR REPLACE TABLE anomaly_detection_without_label AS SELECT * FROM TABLE(RESULT_SCAN(:x));
 END;
 
-SELECT * FROM anomaly_detection_without_label;
+3. SELECT * FROM anomaly_detection_without_label;
 
 ### Step 6: Run Supervised Anomaly Detection (Optional)
 1. If your data includes an ANOMALY column with labels, train the supervised model with -- Step 8:
@@ -93,6 +94,7 @@ CREATE OR REPLACE SNOWFLAKE.ML.ANOMALY_DETECTION admodel_withlabel (
     TARGET_COLNAME => 'PAID_AMT',
     LABEL_COLNAME => 'ANOMALY'
 );
+
 2 . Detect anomalies and save results with -- Step 9:
 
 BEGIN
@@ -106,16 +108,16 @@ BEGIN
     CREATE OR REPLACE TABLE anomaly_detection_with_label AS SELECT * FROM TABLE(RESULT_SCAN(:x));
 END;
 
-SELECT * FROM anomaly_detection_with_label;
+3. SELECT * FROM anomaly_detection_with_label;
 
 ### Step 7: Compare Anomaly Detection Models
 1 . Run -- Step 10 to compare the number of anomalies detected:
 
-SELECT 'Without Label' AS model, COUNT(*) AS anomalies_detected
+''' SELECT 'Without Label' AS model, COUNT(*) AS anomalies_detected
 FROM anomaly_detection_without_label WHERE IS_ANOMALY = TRUE
 UNION ALL
 SELECT 'With Label' AS model, COUNT(*) AS anomalies_detected
-FROM anomaly_detection_with_label WHERE IS_ANOMALY = TRUE;
+FROM anomaly_detection_with_label WHERE IS_ANOMALY = TRUE; '''
 
 ### Step 8: Generate Forecasts
 1 . Train the forecasting model under -- CREATE PREDICTIONS:
@@ -127,6 +129,7 @@ CREATE OR REPLACE SNOWFLAKE.ML.FORECAST model_forecast (
     TARGET_COLNAME => 'PAID_AMT',
     CONFIG_OBJECT => { 'ON_ERROR': 'SKIP' }
 );
+
 2 . Generate and save forecasts:
 
 CREATE OR REPLACE TABLE forecast_prediction AS
@@ -135,7 +138,8 @@ SELECT * FROM TABLE(model_forecast!FORECAST(
     SERIES_COLNAME => 'BUILDING_ID',
     TIMESTAMP_COLNAME => 'PAID_YEAR_MONTH_TM'
 ));
-SELECT * FROM forecast_prediction;
+
+3. SELECT * FROM forecast_prediction;
 
 ### Step 9: Evaluate Models
 1. Check model performance with -- Step 11:

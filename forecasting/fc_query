@@ -1,0 +1,90 @@
+
+// The following is an optional convenience. It needs more privileged role - accountadmin
+// Without the following, you will need to fully qualify ML functions with db_name.schema_name
+ALTER ACCOUNT SET search_path='$current, $public, snowflake.ml';
+
+
+// ***************
+// Forecasting
+// ***************
+
+select * from CLM_FACT;
+
+INSERT INTO ANOMALY_DB.ANOMALY_SCHEMA.CLM_FACT (
+    BUILDING_ID,
+    PAID_YEAR_MONTH,
+    PAID_YEAR_MONTH_TM,
+    PAID_AMT,
+    SITE_ID,
+    PRIMARY_USE,
+    AIR_TEMPERATURE,
+    CLOUD_COVERAGE,
+    DEW_TEMPERATURE,
+    PRECIP_DEPTH_1_HR,
+    SEA_LEVEL_PRESSURE,
+    WIND_DIRECTION,
+    WIND_SPEED,
+    HOUR,
+    WEEKDAY,
+    MONTH,
+    YEAR,
+    IS_HOLIDAY
+) VALUES
+    (121, '201603', '2016-03-10 00:00:00', null , 1, 'Education', 20.5, 1.0, 15.3, 0.0, 1015.0, null, 5.5, 10, 2, 2, 2016, FALSE);
+
+
+select * from CLM_FACT;
+
+
+CREATE OR REPLACE VIEW anomaly_db.anomaly_schema.anomaly_vw_train AS
+SELECT *
+FROM anomaly_db.anomaly_schema.CLM_FACT
+WHERE PAID_YEAR_MONTH_TM < '2016-01-14 21:00:00.000';
+  
+
+CREATE OR REPLACE VIEW anomaly_db.anomaly_schema.anomaly_vw_test AS
+SELECT *
+FROM anomaly_db.anomaly_schema.CLM_FACT
+WHERE PAID_YEAR_MONTH_TM >= '2016-01-16 21:00:00.000';
+
+select * from anomaly_vw_train;
+
+select * from anomaly_vw_test;
+    
+
+SELECT MAX(PAID_YEAR_MONTH_TM) AS last_training_date
+FROM ANOMALY_DB.ANOMALY_SCHEMA.anomaly_vw_train;      -- 2016-01-14 20:00:00.000
+
+SELECT MAX(PAID_YEAR_MONTH_TM) AS last_training_date
+FROM ANOMALY_DB.ANOMALY_SCHEMA.anomaly_vw_test;       --2016-03-10 00:00:00.000
+
+show snowflake.ml.forecast;
+
+show forecast;
+
+create or replace snowflake.ml.forecast clm_forecast_test (
+    input_data => SYSTEM$REFERENCE('view', 'anomaly_vw_train'),
+    timestamp_colname => 'PAID_YEAR_MONTH_TM',
+    target_colname => 'PAID_AMT'
+);
+
+
+-- single-series models with exogenous variables
+CALL clm_forecast_test!forecast(
+    INPUT_DATA => SYSTEM$REFERENCE('view', 'anomaly_db.anomaly_schema.anomaly_vw_test'),
+    TIMESTAMP_COLNAME => 'PAID_YEAR_MONTH_TM',
+    CONFIG_OBJECT => OBJECT_CONSTRUCT('prediction_interval', 0.95)
+);
+
+
+
+-- single-series models without exogenous
+-- CALL clm_forecast_test!forecast(
+--     FORECASTING_PERIODS => 30
+-- );
+
+
+
+--------------------------------------------------------------------------------------------
+
+

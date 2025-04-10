@@ -1,0 +1,95 @@
+-----------------------------------------------------------
+-- SETUP
+-----------------------------------------------------------
+use role ANOMALY_ROLE;
+use warehouse ANOMALY_WH;
+use database ANOMALY_DB;
+use schema ANOMALY_SCHEMA;
+
+-----------------------------------------------------------
+-- CREATE PREDICTIONS
+-----------------------------------------------------------
+
+select * from ANOMALY_VW_TRAIN;
+
+select * from ANOMALY_VW_TEST;
+
+-- Step 1: Create the forecasting model
+CREATE OR REPLACE SNOWFLAKE.ML.FORECAST model_forecast(
+    INPUT_DATA => SYSTEM$REFERENCE('VIEW', 'ANOMALY_VW_TRAIN'),
+    SERIES_COLNAME => 'BUILDING_ID',
+    TIMESTAMP_COLNAME => 'PAID_YEAR_MONTH_TM',
+    TARGET_COLNAME => 'PAID_AMT',
+    CONFIG_OBJECT => { 'ON_ERROR': 'SKIP' }
+);
+
+SELECT * FROM TABLE(model_forecast!FORECAST(FORECASTING_PERIODS => 7));
+
+call model_forecast!FORECAST();
+
+
+-- Step 2: Generate the forecast and save to a table
+CREATE OR REPLACE TABLE forecast_prediction AS
+SELECT * 
+FROM TABLE(model_forecast!FORECAST(
+    INPUT_DATA => SYSTEM$REFERENCE('VIEW', 'ANOMALY_VW_TEST'),
+    SERIES_COLNAME => 'BUILDING_ID',
+    TIMESTAMP_COLNAME => 'PAID_YEAR_MONTH_TM'
+));
+
+select * from forecast_prediction;
+
+CREATE OR REPLACE TABLE forecast_with_actuals AS
+SELECT 
+    vw.building_id,
+    vw.PAID_YEAR_MONTH_TM,
+    vw.PAID_YEAR_MONTH,
+    vw.PAID_AMT,
+    vw.site_id,
+    vw.primary_use,
+    vw.air_temperature,
+    vw.cloud_coverage,
+    vw.dew_temperature,
+    vw.precip_depth_1_hr,
+    vw.sea_level_pressure,
+    vw.wind_direction,
+    vw.wind_speed,
+    vw.hour,
+    vw.weekday,
+    vw.month,
+    vw.year,
+    vw.is_holiday,
+    ar.FORECAST,
+    ar.LOWER_BOUND,
+    ar.UPPER_BOUND,
+    ar.IS_ANOMALY,
+    ar.PERCENTILE,
+    ar.DISTANCE
+FROM 
+    anomaly_vw_test AS vw
+JOIN 
+    TABLE(model_meter_reading_forecast!FORECAST(
+        INPUT_DATA => SYSTEM$REFERENCE('VIEW', 'ANOMALY_VW_TEST'),
+        SERIES_COLNAME => 'BUILDING_ID',
+        TIMESTAMP_COLNAME => 'PAID_YEAR_MONTH_TM'
+    )) AS ar
+ON 
+    vw.BUILDING_ID = ar.SERIES
+    AND vw.TIMESTAMP = ar.TS;
+
+select * from forecast_with_actuals;
+
+-----------------------------------------------------------
+
+SHOW SNOWFLAKE.ML.FORECAST;
+
+GRANT CREATE SNOWFLAKE.ML.FORECAST ON SCHEMA anomaly_db.anomaly_schema TO ROLE anomaly_role;
+
+-- Inspect the accuracy metrics of your model. 
+CALL model_forecast!SHOW_EVALUATION_METRICS();
+
+-- Inspect the relative importance of your features, including auto-generated features. 
+CALL model_forecast!EXPLAIN_FEATURE_IMPORTANCE();
+
+
+

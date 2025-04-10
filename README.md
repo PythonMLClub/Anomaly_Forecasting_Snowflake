@@ -144,13 +144,7 @@ CALL model_forecast!SHOW_EVALUATION_METRICS();
 CALL model_forecast!EXPLAIN_FEATURE_IMPORTANCE();
 
 # 📊 Example Output
-Anomaly Detection Results
-TS	Y	FORECAST	IS_ANOMALY	PERCENTILE	DISTANCE
-2016-01-16 00:00:00	5.0	4.8	FALSE	0.62	0.31
-2016-01-17 00:00:00	20.0	9.0	TRUE	0.99	2.40
-Forecasting Results
-BUILDING_ID	PAID_YEAR_MONTH_TM	PAID_AMT	FORECAST	LOWER_BOUND	UPPER_BOUND
-121	2016-01-16 00:00:00	5.0	5.2	4.5	5.9
+![image](https://github.com/user-attachments/assets/4030f509-450f-447d-84f3-33f3653bd452)
 
 # Notes
 Replace <your-username> with your GitHub username and Snowflake username where applicable.
